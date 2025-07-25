@@ -4,7 +4,10 @@ const User = require('../models/user');
 
 // Get all users with rank
 router.get('/', async (req, res) => {
-  const users = await User.find().sort({ totalPoints: -1 });
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
+  const skip = (page - 1) * limit;
+  const users = await User.find().sort({ totalPoints: -1 }).skip(skip).limit(limit);
   const rankedUsers = users.map((user, i) => ({
     _id: user._id,
     name: user.name,
